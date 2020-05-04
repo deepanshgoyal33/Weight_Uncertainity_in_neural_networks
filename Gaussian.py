@@ -20,7 +20,7 @@ class Gaussian(object):
         return torch.log1p(torch.exp(self.rho))
 
     def sample(self):
-        epsilon = sell.normal.sample(self.rho.size())
+        epsilon = self.normal.sample(self.rho.size())
         return self.mu +self.sigma * epsilon
 
     def log_prob(self, input):
