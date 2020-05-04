@@ -2,14 +2,13 @@ import torch
 import torch.nn as nn
 import numpy as np
 
-import nn.functional as F
-
+import torch.nn.functional as F
+import torchvision
 
 from Gaussian import *
 
 
 class BayesianNeuralNetLayer(nn.Module):
-
     """
 Defining the funtionality of 1 Bayesian Layer
 Input:
@@ -18,8 +17,7 @@ Input:
 Output:
     layer with variational inference bundeled in
     """
-
-   def __init__(self, in_features, out_features):
+    def __init__(self, in_features, out_features):
         super().__init__()
         self.in_features = in_features
         self.out_features = our_features
@@ -98,9 +96,8 @@ class BayesianNetwork(nn.Module):
         log_prior = log_priors.mean()
         log_variational_posterior = log_variational_posteriors.mean()
         negative_log_likelihood = F.nll_loss(
-    outputs.mean(0), target, size_average=False)
+        outputs.mean(0), target, size_average=False)
         loss = (log_variational_posterior - log_prior) /NUM_BATCHES + negative_log_likelihood
         return loss
 
 
-net = BayesianNetwork()
