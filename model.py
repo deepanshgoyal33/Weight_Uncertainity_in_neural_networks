@@ -20,12 +20,12 @@ Output:
     def __init__(self, in_features, out_features):
         super().__init__()
         self.in_features = in_features
-        self.out_features = our_features
+        self.out_features = out_features
         # Weight parameters
         self.weight_mu = nn.Parameter(torch.Tensor(
             out_features, in_features).normal_(-0, 0.2))
-        self.weigt_rho = nn.Prameter(torch.Tensor(
-            out_features, in_features).uniform(-5, -4))
+        self.weigt_rho = nn.Parameter(torch.Tensor(
+            out_features, in_features).uniform_(-5, -4))
         self.weight = Gaussian(self.weight_mu, self.weigt_rho)
         # bias parameters: uniform distribution with given mean and standard
         # devatiation
@@ -65,7 +65,7 @@ class BayesianNetwork(nn.Module):
     """
     def __init__(self):
         super().__init__()
-        self.l1 = BayesianNeuralNetLayer(feat_in, 400)
+        self.l1 = BayesianNeuralNetLayer(28*28, 400)
         self.l2 = BayesianNeuralNetLayer(400, 400)
         self.l3 = BayesianNeuralNetLayer(400, 10)
 
@@ -83,7 +83,7 @@ class BayesianNetwork(nn.Module):
         return self.l1.log_variational_posterior + \
             self.l2.log_variational_posterior + self.l3.log_variational_posterior
 
-    def sample_elbo(self, input, target, samples=SAMPLES):
+    def sample_elbo(self, input, target, samples=2):
         outputs = torch.zeros(samples, BATCH_SIZE, CLASSES)
         log_priors = torch.zeros(samples)
         log_variational_posteriors = torch.zeros(samples)
