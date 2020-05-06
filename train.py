@@ -20,7 +20,7 @@ from model import *
 from Gaussian import *
 
 # TesnorBoard writing
-def write_weight_histograms(epoch):
+def write_weight_histograms(net,epoch):
     writer.add_histogram('histogram/w1_mu', net.l1.weight_mu,epoch)
     writer.add_histogram('histogram/w1_rho', net.l1.weight_rho,epoch)
     writer.add_histogram('histogram/w2_mu', net.l2.weight_mu,epoch)
@@ -42,10 +42,10 @@ def write_loss_scalars(epoch, batch_idx, loss, log_prior, log_variational_poster
     writer.add_scalar('logs/negative_log_likelihood', negative_log_likelihood, epoch*NUM_BATCHES+batch_idx)
 
 
-def train(model, epoch, optimizer):
-    net.train()
-    if epoh==0:
-        write_weight_histograms(epoch)
+def train(model,train_loader, epoch, optimizer,device):
+    model.train()
+    if epoch==0:
+        write_weight_histograms(model,epoch)
     for batch_idx, (data,target) in enumerate (tqdm(train_loader)):
         data, target = data.to(device), target.to(device)
         model.zero_grad()
@@ -53,7 +53,7 @@ def train(model, epoch, optimizer):
         loss.backward()
         optimizer.step()
         write_loss_scalars(epoch,batch_idx,loss,log_prior, log_variational_posterior,negative_log_likelihood)
-    write_weight_histograms(epoch+1)
+    write_weight_histograms(model,epoch+1)
 
 def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -86,7 +86,7 @@ def main():
     model = BayesianNetwork()
     optimizer = optim.Adam(model.parameters())
     for epoch in range(train_epochs):
-        train(model,epoch,optimizer)
+        train(model,train_loader,epoch,optimizer,device)
 
 if __name__ == "__main__":
     main()

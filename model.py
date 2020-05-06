@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import numpy as np
+import math
 
 import torch.nn.functional as F
 import torchvision
@@ -17,16 +18,16 @@ Input:
 Output:
     layer with variational inference bundeled in
     """
-    def __init__(self, in_features, out_features):
+    def __init__(self, in_features, out_features,PI, SIGMA1, SIGMA2):
         super().__init__()
         self.in_features = in_features
         self.out_features = out_features
         # Weight parameters
         self.weight_mu = nn.Parameter(torch.Tensor(
             out_features, in_features).normal_(-0, 0.2))
-        self.weigt_rho = nn.Parameter(torch.Tensor(
+        self.weight_rho = nn.Parameter(torch.Tensor(
             out_features, in_features).uniform_(-5, -4))
-        self.weight = Gaussian(self.weight_mu, self.weigt_rho)
+        self.weight = Gaussian(self.weight_mu, self.weight_rho)
         # bias parameters: uniform distribution with given mean and standard
         # devatiation
         self.bias_mu = nn.Parameter(torch.Tensor(self.out_features).uniform_(0.1, 0.2))
@@ -63,9 +64,9 @@ class BayesianNetwork(nn.Module):
     """
     def __init__(self):
         super().__init__()
-        self.l1 = BayesianNeuralNetLayer(28*28, 400)
-        self.l2 = BayesianNeuralNetLayer(400, 400)
-        self.l3 = BayesianNeuralNetLayer(400, 10)
+        self.l1 = BayesianNeuralNetLayer(28*28, 400,0.5,torch.cuda.FloatTensor([math.exp(-0)]),torch.cuda.FloatTensor([math.exp(-6)]))
+        self.l2 = BayesianNeuralNetLayer(400, 400,0.5,torch.cuda.FloatTensor([math.exp(-0)]),torch.cuda.FloatTensor([math.exp(-6)]))
+        self.l3 = BayesianNeuralNetLayer(400, 10,0.5,torch.cuda.FloatTensor([math.exp(-0)]),torch.cuda.FloatTensor([math.exp(-6)]))
 
     def forward(self, x, sample=False):
         x = x.view(-1, 28*28)
