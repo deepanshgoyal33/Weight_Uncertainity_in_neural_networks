@@ -29,12 +29,10 @@ Output:
         self.weight = Gaussian(self.weight_mu, self.weigt_rho)
         # bias parameters: uniform distribution with given mean and standard
         # devatiation
-        self.bias_mu = nn.Parameter(
-    torch.Tensor(out_features).uniform_(
-        0.3, 0.2))
+        self.bias_mu = nn.Parameter(torch.Tensor(self.out_features).uniform_(0.1, 0.2))
         self.bias_rho = nn.Parameter(
-            torch.Tensor(out_features).uniform_(-5, -4))
-        self.bias = Gaussian(self.bias_mu. self.bias_rho)
+            torch.Tensor(self.out_features).uniform_(-5, -4))
+        self.bias = Gaussian(self.bias_mu, self.bias_rho)
         # Scaled Distributions
         self.weight_prior = ScaledMixtureGaussian(PI, SIGMA1, SIGMA2)
         self.bias_prior = ScaledMixtureGaussian(PI, SIGMA1, SIGMA2)

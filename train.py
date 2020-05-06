@@ -78,13 +78,12 @@ def main():
     SAMPLES = 2
     TEST_SAMPLES = 10
 
-    model = BayesianNetwork()
-
     ##Initiating the variables
     PI = 0.5
     SIGMA_1 = torch.cuda.FloatTensor([math.exp(-0)])
     SIGMA_2 = torch.cuda.FloatTensor([math.exp(-6)])
-
+    
+    model = BayesianNetwork()
     optimizer = optim.Adam(model.parameters())
     for epoch in range(train_epochs):
         train(model,epoch,optimizer)
